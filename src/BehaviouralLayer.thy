@@ -29,6 +29,16 @@ and statement = Input input_ex
               | Exec channel operation variable statement (* Exec(r, o, x, B) *)
 
 
+datatype basic_type = Bool | Int | Long | Double | String | Raw | Void
+
+datatype cardinality = OO (* [0,0] *)
+                     | OI (* [0,1] *)
+                     | II (* [1,1] *)
+
+datatype child_type = Child string cardinality tree_type
+and       tree_type = TLeaf basic_type | TNode basic_type "child_type list" (* FIXME: should be non-empty list of children. *)
+
+
 
 end
 
