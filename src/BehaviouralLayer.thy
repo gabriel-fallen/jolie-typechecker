@@ -1,6 +1,10 @@
+section {* Behavioural layer *}
+
 theory BehaviouralLayer
 imports Main
 begin
+
+subsection {* Term definitions  *}
 
 type_synonym channel   = string (* FIXME: do we need more advanced type for channel names? *)
 type_synonym operation = string (* FIXME: do we need more advanced type for operation names? *)
@@ -10,11 +14,11 @@ type_synonym variable  = string (* TODO: just stub for now. We'll define a type 
 
 datatype expr = Expr (* TODO: define expression terms *)
 
-datatype output_ex = Notify operation location expr (* o@l(e) *)
-                   | SolicitResp operation location expr variable (* o@l(e)(x) *)
+datatype output_ex = Notify     operation location expr (* o@l(e) *)
+                   | SolicitRes operation location expr variable (* o@l(e)(x) *)
 datatype
     input_ex  = OneWay operation variable (* o(x) *)
-              | ReqResp operation variable variable statement (* o(x)(x'){B} *)
+              | ReqRes operation variable variable statement (* o(x)(x'){B} *)
 and statement = Input input_ex
               | Output output_ex
               | If expr statement
@@ -39,7 +43,22 @@ datatype child_type = Child string cardinality tree_type
 and       tree_type = TLeaf basic_type | TNode basic_type "child_type list" (* FIXME: should be non-empty list of children. *)
 
 
+subsection {* Typing rules  *}
+
+subsubsection {* Typing environment *}
+
+datatype type_declaration = OutNotify  operation location tree_type
+                          | OutSolRes  operation location tree_type tree_type
+                          | InOneWay   operation tree_type
+                          | InReqRes   operation tree_type tree_type
+                          | Var        variable tree_type
+
+type_synonym typing_env = "type_declaration set"
+
+
 
 end
+
+
 
 
